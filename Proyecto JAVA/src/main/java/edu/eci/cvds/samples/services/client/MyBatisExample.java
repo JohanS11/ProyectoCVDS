@@ -16,15 +16,30 @@
  */
 package edu.eci.cvds.samples.services.client;
 
-
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.SQLException;
+import java.util.Calendar;
+import java.util.Date;
+
 import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
+
+import com.google.inject.Guice;
+import com.google.inject.Injector;
+import com.google.inject.Module;
+
+import edu.eci.cvds.sampleprj.dao.mybatis.mappers.ClienteMapper;
+import edu.eci.cvds.sampleprj.dao.mybatis.mappers.ItemMapper;
+import edu.eci.cvds.sampleprj.dao.mybatis.mappers.TipoItemMapper;
+import edu.eci.cvds.samples.entities.Item;
+import edu.eci.cvds.samples.entities.TipoItem;
+import edu.eci.cvds.samples.services.ExcepcionServiciosAlquiler;
+import edu.eci.cvds.samples.services.ServiciosAlquiler;
+import edu.eci.cvds.samples.services.ServiciosAlquilerFactory;
+import edu.eci.cvds.samples.services.impl.ServiciosAlquilerImpl;
 
 /**
  *
@@ -51,6 +66,9 @@ public class MyBatisExample {
         }
         return sqlSessionFactory;
     }
+    
+    
+    
 
     /**
      * Programa principal de ejempo de uso de MyBATIS
@@ -63,16 +81,46 @@ public class MyBatisExample {
         SqlSession sqlss = sessionfact.openSession();
 
         
-        //Crear el mapper y usarlo: 
-        //ClienteMapper cm=sqlss.getMapper(ClienteMapper.class)
-        //cm...
         
+        /**
+         * //Crear el mapper y usarlo: 
+        ClienteMapper cm=sqlss.getMapper(ClienteMapper.class);  
+        //CONSULTAR TODOS LOS CLIENTES
+        System.out.println(cm.consultarClientes());
+        //CONSULTAR UNO DE LOS CLIENTES
+        System.out.println(cm.consultarCliente(4));
+        // NOTA IMPORTANTE: EL METODO DE LA CLASE DATE SUMA 1900 AL AÑO, 1 AL MES Y EL DIA QUEDA IGUAL
+        // POR LO TANTO LAS FECHAS DE LOS EJEMPLOS SON : 2019-09-03 Y 2019-09-04
+        cm.agregarItemRentadoACliente(4, 1, new Date(119,8,03), new Date(119,8,04));
+        //cm...
+        ItemMapper cmItem= sqlss.getMapper(ItemMapper.class);
+        Item item = new Item (new TipoItem(3,"Pelicula"),69692853,"peliculasss","JOHAN ITEEEM 22222",
+        				new Date(119,8,03),2000,"formatoComun","terror");
+        //AGREGAR UN ITEM
+        cmItem.insertarItem(item);
+        //IMPRIMIR TODOS LOS ITEMS
+        System.out.println(cmItem.consultarItems());
+        //IMPRIMIR UN SOLO ITEM
+        System.out.println(cmItem.consultarItem(4)); 
+        TipoItemMapper cmti= sqlss.getMapper(TipoItemMapper.class);  
+        System.out.println(cmti.getTipoItem(1));
+        TipoItem tipo = new TipoItem (69,"peli");
+        cmti.insertarTipoItem(tipo);*/
         
         
         sqlss.commit();
         
         
         sqlss.close();
+        
+        ServiciosAlquilerFactory factory = ServiciosAlquilerFactory.getInstance();
+        ServiciosAlquiler implementacion = factory.getServiciosAlquiler();
+        try {
+			System.out.println(implementacion.consultarItem(1).toString());
+		} catch (ExcepcionServiciosAlquiler e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
         
         
